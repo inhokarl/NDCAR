@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerador de Nota</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4CAF50" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("w.js");
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 30px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="date"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+    .servico-inputs {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .servico-inputs input {
+      flex: 1;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    h3 {
+      text-align: right;
+      margin-top: 10px;
+    }
+    img {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 120px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://i.imgur.com/Dj5Fkxu.png" alt="Logo">
+    <h2>Gerador de Nota</h2>
+
+    <label>Nome do Cliente:</label>
+    <input type="text" id="cliente">
+
+    <label>Data:</label>
+    <input type="date" id="data">
+
+    <label>Veículo:</label>
+    <input type="text" id="veiculo">
+
+    <label>Placa:</label>
+    <input type="text" id="placa">
+
+    <label>Serviço Realizado:</label>
+    <div class="servico-inputs">
+      <input type="text" id="servico" placeholder="Descrição">
+      <input type="text" id="valorServico" placeholder="Valor">
+      <button onclick="adicionarServico()">Adicionar</button>
+    </div>
+
+    <table id="tabelaServicos">
+      <thead>
+        <tr><th>Serviço</th><th>Valor (R$)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Total: R$ <span id="total">0.00</span></h3>
+
+    <button onclick="gerarPDF()">Gerar Nota</button>
+  </div>
+
+  <script>
+    const servicos = [];
+
+    function adicionarServico() {
+      const servico = document.getElementById("servico").value;
+      const valor = parseFloat(document.getElementById("valorServico").value);
+      if (servico && !isNaN(valor)) {
+        servicos.push({ servico, valor });
+        atualizarTabela();
+        document.getElementById("servico").value = "";
+        document.getElementById("valorServico").value = "";
+      }
+    }
+
+    function atualizarTabela() {
+      const corpo = document.getElementById("tabelaServicos").getElementsByTagName("tbody")[0];
+      corpo.innerHTML = "";
+      let total = 0;
+      servicos.forEach(s => {
+        const linha = corpo.insertRow();
+        linha.insertCell(0).textContent = s.servico;
+        linha.insertCell(1).textContent = s.valor.toFixed(2);
+        total += s.valor;
+      });
+      document.getElementById("total").textContent = total.toFixed(2);
+    }
+
+    async function gerarPDF() {
+      const jsPDF = window.jspdf.jsPDF;
+      const doc = new jsPDF();
+
+      const cliente = document.getElementById("cliente").value;
+      const data = document.getElementById("data").value;
+      const veiculo = document.getElementById("veiculo").value;
+      const placa = document.getElementById("placa").value;
+      let y = 20;
+
+      doc.setFontSize(12);
+      doc.text("ND CAR", 10, y); y += 10;
+      doc.text("CNPJ 53.551.174/0001-09", 10, y); y += 10;
+      doc.text("Novo tempo", 10, y); y += 10;
+      doc.text("Av Emanuel Moura Neto, N673", 10, y); y += 20;
+
+      doc.text(`Cliente: ${cliente}`, 10, y); y += 10;
+      doc.text(`Data: ${data}`, 10, y); y += 10;
+      doc.text(`Veículo: ${veiculo}`, 10, y); y += 10;
+      doc.text(`Placa: ${placa}`, 10, y); y += 10;
+
+      doc.text("Descrição dos Serviços:", 10, y); y += 10;
+      let total = 0;
+      servicos.forEach(s => {
+        doc.text(`- ${s.servico}: R$ ${s.valor.toFixed(2)}`, 10, y);
+        y += 10;
+        total += s.valor;
+      });
+
+      y += 10;
+      doc.text("TOTAL R$ " + total.toFixed(2), 10, y); y += 20;
+
+      doc.text("Obrigado", 10, y); y += 10;
+      doc.text("Termos e Condições", 10, y); y += 10;
+      doc.text("O pagamento tem de ser feito dentro de 15 dias", 10, y);
+
+      doc.save("nota.pdf");
+    }
+  </script>
+</body>
+</html>
