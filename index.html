@@ -88,7 +88,7 @@
 </head>
 <body>
   <div class="container">
-    <img src="https://i.imgur.com/Dj5Fkxu.png" alt="Logo">
+    <img src="https://inhokarl.github.io/NDCAR/logo-topo.png" alt="Logo">
     <h2>Gerador de Nota</h2>
 
     <label>Nome do Cliente:</label>
@@ -153,39 +153,66 @@
       const jsPDF = window.jspdf.jsPDF;
       const doc = new jsPDF();
 
+      const logoTopo = await loadImage("https://inhokarl.github.io/NDCAR/logo-topo.png");
+      const logoRodape = await loadImage("https://inhokarl.github.io/NDCAR/logo-rodape.png");
+
       const cliente = document.getElementById("cliente").value;
       const data = document.getElementById("data").value;
       const veiculo = document.getElementById("veiculo").value;
       const placa = document.getElementById("placa").value;
       let y = 20;
 
-      doc.setFontSize(12);
-      doc.text("ND CAR", 10, y); y += 10;
-      doc.text("CNPJ 53.551.174/0001-09", 10, y); y += 10;
-      doc.text("Novo tempo", 10, y); y += 10;
-      doc.text("Av Emanuel Moura Neto, N673", 10, y); y += 20;
+      doc.setFontSize(22);
+      doc.text("RECIBO", 10, y);
+      doc.addImage(logoTopo, "PNG", 150, 10, 40, 20);
 
-      doc.text(`Cliente: ${cliente}`, 10, y); y += 10;
-      doc.text(`Data: ${data}`, 10, y); y += 10;
-      doc.text(`Veículo: ${veiculo}`, 10, y); y += 10;
+      doc.setFontSize(10);
+      y += 25;
+      doc.text("ND CAR", 10, y); y += 5;
+      doc.text("CNPJ 53.551.174/0001-09", 10, y); y += 5;
+      doc.text("Novo tempo", 10, y); y += 5;
+      doc.text("Av Emanuel Moura Neto, N673", 10, y); y += 10;
+
+      doc.text(`Cliente: ${cliente}`, 10, y); y += 5;
+      doc.text(`Data: ${data}`, 10, y); y += 5;
+      doc.text(`Veículo: ${veiculo}`, 10, y); y += 5;
       doc.text(`Placa: ${placa}`, 10, y); y += 10;
 
-      doc.text("Descrição dos Serviços:", 10, y); y += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("Descrição dos Serviços:", 10, y); y += 7;
+      doc.setFont("helvetica", "normal");
+
       let total = 0;
       servicos.forEach(s => {
         doc.text(`- ${s.servico}: R$ ${s.valor.toFixed(2)}`, 10, y);
-        y += 10;
+        y += 6;
         total += s.valor;
       });
 
       y += 10;
-      doc.text("TOTAL R$ " + total.toFixed(2), 10, y); y += 20;
+      doc.setFont("helvetica", "bold");
+      doc.text("TOTAL R$ " + total.toFixed(2), 10, y);
+      doc.addImage(logoRodape, "PNG", 140, y + 10, 50, 20);
 
-      doc.text("Obrigado", 10, y); y += 10;
-      doc.text("Termos e Condições", 10, y); y += 10;
-      doc.text("O pagamento tem de ser feito dentro de 15 dias", 10, y);
+      y += 30;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Obrigado", 10, y); y += 5;
+      doc.setTextColor(200, 0, 0);
+      doc.text("Termos e Condições", 60, y);
+      doc.setTextColor(0);
+      doc.text("O pagamento tem de ser feito dentro de 15 dias", 60, y + 5);
 
       doc.save("nota.pdf");
+    }
+
+    function loadImage(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.src = url;
+      });
     }
   </script>
 </body>
