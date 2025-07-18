@@ -11,7 +11,7 @@
       navigator.serviceWorker.register("w.js");
     }
   </script>
-  <script src="https://inhokarl.github.io/NDCAR/logo-topo.png"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
       display: block;
       font-weight: bold;
     }
-    input[type="text"], input[type="date"], textarea {
+    input[type="text"], input[type="date"] {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -153,8 +153,7 @@
       const jsPDF = window.jspdf.jsPDF;
       const doc = new jsPDF();
 
-      const logoTopo = await loadImage("https://inhokarl.github.io/NDCAR/logo-topo.png");
-      const logoRodape = await loadImage("https://inhokarl.github.io/NDCAR/logo-rodape.png");
+      const logo = await loadImage("https://inhokarl.github.io/NDCAR/logo-topo.png");
 
       const cliente = document.getElementById("cliente").value;
       const data = document.getElementById("data").value;
@@ -164,7 +163,7 @@
 
       doc.setFontSize(22);
       doc.text("RECIBO", 10, y);
-      doc.addImage(logoTopo, "PNG", 150, 10, 40, 20);
+      doc.addImage(logo, "PNG", 150, 10, 40, 20);
 
       doc.setFontSize(10);
       y += 25;
@@ -192,7 +191,9 @@
       y += 10;
       doc.setFont("helvetica", "bold");
       doc.text("TOTAL R$ " + total.toFixed(2), 10, y);
-      doc.addImage(logoRodape, "PNG", 140, y + 10, 50, 20);
+
+      // Logo no rodapé
+      doc.addImage(logo, "PNG", 140, y + 10, 50, 20);
 
       y += 30;
       doc.setFontSize(10);
