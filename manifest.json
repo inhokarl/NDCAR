@@ -1,7 +1,7 @@
 {
   "name": "ND CAR - Gerador de Nota",
   "short_name": "ND CAR",
-  "start_url": "index.html",
+  "start_url": "/NDCAR/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
