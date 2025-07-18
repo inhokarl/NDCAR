@@ -8,7 +8,7 @@ const ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
 
-
+// Instalação
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME)
@@ -17,7 +17,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-
+// Ativação (limpeza de caches antigos)
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then(keys => 
@@ -28,7 +28,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-
+// Estratégia: Cache-first com fallback para rede
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request)
