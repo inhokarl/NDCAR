@@ -5,14 +5,17 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
+  "description": "Gerador de recibos para oficina mecânica",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "logo-topo.png",
+      "src": "/NDCAR/logo-topo.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "logo-topo.png",
+      "src": "/NDCAR/logo-topo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
