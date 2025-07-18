@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Gerador de Nota</title>
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="/NDCAR/manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("w.js");
+      navigator.serviceWorker.register("/NDCAR/w.js");
     }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -191,8 +191,6 @@
       y += 10;
       doc.setFont("helvetica", "bold");
       doc.text("TOTAL R$ " + total.toFixed(2), 10, y);
-
-      // Logo no rodapé
       doc.addImage(logo, "PNG", 140, y + 10, 50, 20);
 
       y += 30;
